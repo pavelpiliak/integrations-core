@@ -19,7 +19,6 @@ from datadog_checks.base.utils.models import validation
 
 from . import defaults, validators
 
-
 SECURE_FIELD_NAMES = frozenset(['tls_ca_cert'])
 
 
@@ -50,6 +49,18 @@ class MetricPatterns(BaseModel):
     )
     exclude: Optional[tuple[str, ...]] = None
     include: Optional[tuple[str, ...]] = None
+
+
+class PartsAndMerges(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        frozen=True,
+    )
+    collection_interval: Optional[float] = None
+    enabled: Optional[bool] = None
+    max_mutations_rows: Optional[int] = None
+    max_parts_rows: Optional[int] = None
+    run_sync: Optional[bool] = None
 
 
 class QueryCompletions(BaseModel):
@@ -106,6 +117,7 @@ class InstanceConfig(BaseModel):
     metric_patterns: Optional[MetricPatterns] = None
     min_collection_interval: Optional[float] = None
     only_custom_queries: Optional[bool] = None
+    parts_and_merges: Optional[PartsAndMerges] = None
     password: Optional[str] = None
     port: Optional[int] = None
     query_completions: Optional[QueryCompletions] = None

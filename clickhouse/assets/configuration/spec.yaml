@@ -236,6 +236,44 @@ files:
           value:
             type: boolean
             example: false
+    - name: parts_and_merges
+      description: Configure parts and merges monitoring
+      options:
+        - name: enabled
+          description: |
+            Enable collection of parts and merges monitoring. Requires `dbm: true`.
+            Provides per-table part counts, live merge progress, pending mutations, and replication queue depth.
+          value:
+            type: boolean
+            example: false
+        - name: collection_interval
+          description: |
+            Set the parts and merges collection interval (in seconds).
+            All four system tables (parts, merges, mutations, replication_queue) are queried on each run.
+          value:
+            type: number
+            example: 60
+        - name: max_parts_rows
+          description: |
+            Maximum number of rows to return from system.parts per collection, ordered by active_part_count descending.
+            Limits collection to the tables with the highest part counts.
+          value:
+            type: integer
+            example: 500
+        - name: max_mutations_rows
+          description: |
+            Maximum number of rows to return from system.mutations per collection, ordered by create_time ascending.
+            Limits collection to the oldest pending mutations.
+          value:
+            type: integer
+            example: 200
+        - name: run_sync
+          hidden: true
+          description: |
+            Run the parts and merges collection synchronously. For testing only.
+          value:
+            type: boolean
+            example: false
     - template: instances/db
       overrides:
         custom_queries.value.example:

@@ -42,3 +42,13 @@ def instance_query_completions():
         max_samples_per_collection=1000,
         run_sync=False,
     )
+
+
+def instance_parts_and_merges():
+    return instance.PartsAndMerges(
+        enabled=False,
+        collection_interval=60,
+        max_parts_rows=500,
+        max_mutations_rows=200,
+        run_sync=False,
+    )

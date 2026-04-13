@@ -17,6 +17,7 @@ from . import queries
 from .__about__ import __version__
 from .config import build_config, sanitize
 from .health import ClickhouseHealth, HealthEvent, HealthStatus
+from .parts_and_merges import ClickhousePartsAndMerges
 from .query_completions import ClickhouseQueryCompletions
 from .statement_samples import ClickhouseStatementSamples
 from .statements import ClickhouseStatementMetrics
@@ -119,6 +120,12 @@ class ClickhouseCheck(DatabaseCheck):
             self.query_completions = ClickhouseQueryCompletions(self, self._config.query_completions)
         else:
             self.query_completions = None
+
+        # Initialize parts and merges monitoring (from system.parts, merges, mutations, replication_queue)
+        if self._config.dbm and self._config.parts_and_merges.enabled:
+            self.parts_and_merges = ClickhousePartsAndMerges(self, self._config.parts_and_merges)
+        else:
+            self.parts_and_merges = None
 
     @property
     def tags(self) -> list[str]:
@@ -243,6 +250,10 @@ class ClickhouseCheck(DatabaseCheck):
         # Run query completions if DBM is enabled (from system.query_log)
         if self.query_completions:
             self.query_completions.run_job_loop(self.tags)
+
+        # Run parts and merges monitoring if enabled
+        if self.parts_and_merges:
+            self.parts_and_merges.run_job_loop(self.tags)
 
     @AgentCheck.metadata_entrypoint
     def collect_version(self):
@@ -461,6 +472,8 @@ class ClickhouseCheck(DatabaseCheck):
             self.statement_samples.cancel()
         if self.query_completions:
             self.query_completions.cancel()
+        if self.parts_and_merges:
+            self.parts_and_merges.cancel()
 
         # Wait for job loops to finish
         if self.statement_metrics and self.statement_metrics._job_loop_future:
@@ -469,6 +482,8 @@ class ClickhouseCheck(DatabaseCheck):
             self.statement_samples._job_loop_future.result()
         if self.query_completions and self.query_completions._job_loop_future:
             self.query_completions._job_loop_future.result()
+        if self.parts_and_merges and self.parts_and_merges._job_loop_future:
+            self.parts_and_merges._job_loop_future.result()
 
         # Close main client
         if self._client:

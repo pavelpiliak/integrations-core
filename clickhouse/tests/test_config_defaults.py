@@ -58,6 +58,14 @@ EXPECTED_DEFAULTS = {
         'max_samples_per_collection': 1000,
         'run_sync': False,
     },
+    # === DBM: Parts and merges ===
+    'parts_and_merges': {
+        'enabled': False,
+        'collection_interval': 60,
+        'max_parts_rows': 500,
+        'max_mutations_rows': 200,
+        'run_sync': False,
+    },
     # === Tagging ===
     'tags': (),
     'disable_generic_tags': False,
