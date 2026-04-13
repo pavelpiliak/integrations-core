@@ -385,20 +385,24 @@ class ClickhousePartsAndMerges(DBMAsyncJob):
         mutations = self._collect_mutations()
         replication_queue = self._collect_replication_queue()
 
+        collection_timestamp = int(time.time() * 1000)
         event = {
             "host": self._check.reported_hostname,
             "database_instance": self._check.database_identifier,
-            "ddagentversion": datadog_agent.get_version(),
-            "ddsource": "clickhouse",
-            "dbm_type": "parts_and_merges_snapshot",
+            "agent_version": datadog_agent.get_version(),
+            "dbms": "clickhouse",
+            "dbms_version": self._check.dbms_version,
+            "kind": "clickhouse_parts_and_merges",
             "collection_interval": self._collection_interval,
             "ddtags": self._tags_no_db,
-            "timestamp": time.time() * 1000,
-            "service": getattr(self._check._config, 'service', None),
-            "clickhouse_parts": parts,
-            "clickhouse_merges": merges,
-            "clickhouse_mutations": mutations,
-            "clickhouse_replication_queue": replication_queue,
+            "timestamp": collection_timestamp,
+            "metadata": {
+                "parts": parts,
+                "merges": merges,
+                "mutations": mutations,
+                "replication_queue": replication_queue,
+                "collection_timestamp": collection_timestamp,
+            },
         }
 
         self._check.database_monitoring_metadata(json.dumps(event, default=default_json_event_encoding))
