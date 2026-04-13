@@ -65,6 +65,20 @@ No additional installation is needed on your server.
 
    The `log_type:request` tag on the request log entry routes HTTP access logs through a dedicated parsing pipeline that extracts standard HTTP attributes (method, status code, URL path, client IP).
 
+   NiFi is a Java application that produces multiline stack traces. To aggregate them into single log events, add a `log_processing_rules` entry to the application log:
+
+   ```yaml
+   logs:
+     - type: file
+       path: /opt/nifi/logs/nifi-app.log
+       source: nifi
+       service: nifi
+       log_processing_rules:
+         - type: multi_line
+           name: java_stack_trace
+           pattern: \d{4}-\d{2}-\d{2}
+   ```
+
 3. [Restart the Agent][5].
 
 ### Validation

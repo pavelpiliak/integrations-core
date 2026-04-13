@@ -3,6 +3,10 @@ provides:
     always_on: true
     data_type: metrics
     direction: inbound
+  - id: nifi-events
+    always_on: true
+    data_type: events
+    direction: inbound
   - id: nifi-logs
     always_on: false
     data_type: logs
