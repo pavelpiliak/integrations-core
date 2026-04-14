@@ -316,8 +316,7 @@ def mock_http_get(mock_http):
 
             return MockHTTPResponse(json_data=response_data)
 
-        print(f"[MOCK ERROR] No matching endpoint for URL: {url}")
-        return MockHTTPResponse(status_code=404)
+        pytest.fail(f"url `{url}` not registered")
 
     mock_http.get.side_effect = mock_response
     return mock_http.get
