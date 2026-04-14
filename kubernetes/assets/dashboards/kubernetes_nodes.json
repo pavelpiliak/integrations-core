@@ -1868,7 +1868,7 @@
                                             {
                                                 "type": "formula",
                                                 "index": 0,
-                                                "order": "desc"
+                                                "order": "asc"
                                             }
                                         ]
                                     },
