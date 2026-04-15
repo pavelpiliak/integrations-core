@@ -1,4 +1,5 @@
 - name: host
+  display_priority: 5
   legacy: true
   required: false
   description: |
@@ -24,6 +25,7 @@
   value:
     type: string
 - name: additional_metrics
+  display_priority: 0
   legacy: true
   required: false
   description: |
@@ -52,6 +54,7 @@
       items:
         type: string
 - name: counter_data_types
+  display_priority: 0
   legacy: true
   required: false
   description: |
